@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+			{% block title %}
+				home control
+			{% endblock %}
+		</title>
+	</head>
+
+	<body>
+		</div class="container-fluid">
+		
+		{% block content %}
+		{% endblock %}
+		</div>
+		
+		<script src={{url_for('static', filename='js/script.js')}}></script>
+	</body>
+</html>

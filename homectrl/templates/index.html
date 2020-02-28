@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="row">
+  {% for room in rooms %}
+  <div class="col-xs-12 room">
+      {{ room.name }}
+  </div>
+  {% endfor %}
+
+  <div class="col-xs-12">
+      <a href="{{url_for('room.register')}}">Add another room</a>
+  </div>
+</section>
+
+{% endblock %}

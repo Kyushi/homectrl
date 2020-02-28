@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="row signup-section">
+  <div class="col-xs-12">
+
+    <div class="form-box">
+
+       <form class="form-horizontal" method='POST' action="{{url_for('auth.register')}}">
+
+         <div class="form-group">
+           <label for="name">
+             Username: 
+           </label>
+           <input type="text" name="name" value="{{name}}" autocomplete="name" class="form-control">
+         </div>
+
+	       <div class="form-group">
+           <label for="email">
+             E-mail address:
+           </label>
+           <input type="text" name="email" value="{{email}}" autocomplete="username email" class="form-control">
+         </div>
+        
+         <div class="form-group">
+           <label for="password">
+             Password:
+           </label>
+           <input type="password" name="password" autocomplete="password" class="form-control">
+         </div>
+
+         <div class="form-group">
+           <label for="usertype">
+               User type:
+           </label>
+           <input type="text" name="usertype" value="{{usertype}}" class="form-control">
+         </div>
+
+         <div class="form-group">
+           <input type="submit" value="Register user" class="submit">
+         </div>
+
+       </form>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
