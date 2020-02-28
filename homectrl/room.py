@@ -29,3 +29,10 @@ def register():
             return redirect(url_for('index'))
     return render_template('room/register.html')
 
+
+@bp.route('/<int:room_id>', methods=['GET', 'POST'])
+def view(room_id):
+    db = get_db()
+    room = db.execute("SELECT * FROM room WHERE id = ?;", (room_id, )).fetchone()
+    heaters = db.execute("SELECT * FROM heater WHERE room_fk = ?;", (room_id, )).fetchall()
+    return render_template('room/view.html', room=room, heaters=heaters)

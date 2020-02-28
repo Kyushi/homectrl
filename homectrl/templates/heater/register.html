@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="row signup-section">
+  <div class="col-xs-12">
+
+    <div class="form-box">
+
+       <form class="form-horizontal" method='POST' action="{{url_for('heater.register', room_id=room.id)}}">
+
+         <div class="form-group">
+           <label for="name">
+             Heater name: 
+           </label>
+           <input type="text" name="name" value="{{name}}" autocomplete="name" class="form-control">
+         </div>
+        
+         <div class="form-group">
+           <label for="mac">
+             Heater mac address: 
+           </label>
+           <input type="text" name="mac" value="{{mac}}" autocomplete="mac" class="form-control">
+           </div>
+           
+         <div class="form-group">
+           <label for="name">
+             Add to room: 
+           </label>
+           <select name="room_id">
+               {% if room %}
+               <option value={{room.id}}>{{room.name}}</option>
+               {% else %}
+               <option value=0>Select a room</option>
+               {% endif %}
+               {% for room in rooms %}
+               <option value={{room.id}}>{{room.name}}</option>
+               {% endfor %}
+           </select>
+         </div>
+
+
+
+
+         <div class="form-group">
+           <input type="submit" value="Register" class="submit">
+         </div>
+
+       </form>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

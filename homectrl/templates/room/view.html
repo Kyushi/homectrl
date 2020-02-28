@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="row">
+  <h2>{{room.name}}</h2>
+  {% for heater in heaters %}
+  <div class="col-xs-12 heater">
+    <div class="col-xs-6">
+        {{ heater.name }}
+    </div>
+    <div class="col-xs-6">
+    </div>
+   
+  </div>
+
+  {% endfor %}
+
+  <div class="col-xs-6">
+        <a href="{{url_for('heater.register', room_id=room.id)}}">
+            Add a heater
+        </a>
+  </div>
+
+</section>
+
+{% endblock %}

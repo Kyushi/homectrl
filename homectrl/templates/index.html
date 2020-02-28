@@ -5,7 +5,9 @@
 <section class="row">
   {% for room in rooms %}
   <div class="col-xs-12 room">
-      {{ room.name }}
+      <a href="{{url_for('room.view', room_id=room.id)}}">
+          {{ room.name }}
+      </a>
   </div>
   {% endfor %}
 

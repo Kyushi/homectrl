@@ -31,5 +31,8 @@ def create_app(test_config=None):
     from . import room
     app.register_blueprint(room.bp)
 
+    from . import heater
+    app.register_blueprint(heater.bp)
+
     return app
 
