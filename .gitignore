@@ -1,5 +1,6 @@
 instance/
 homectrl/__pycache__
 venv/
-
+__pycache__/
+*.pyc
 
