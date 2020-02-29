@@ -33,8 +33,10 @@
                {% else %}
                <option value=0>Select a room</option>
                {% endif %}
-               {% for room in rooms %}
-               <option value={{room.id}}>{{room.name}}</option>
+               {% for r in rooms %}
+               {% if r.id != room.id %}
+               <option value={{r.id}}>{{r.name}}</option>
+               {% endif %}
                {% endfor %}
            </select>
          </div>

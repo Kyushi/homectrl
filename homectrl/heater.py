@@ -1,7 +1,7 @@
 from flask import (
-        Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app, make_response
+        Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app, make_response, jsonify
 )
-# import bluetooth as bt
+from bluetooth.ble import DiscoveryService
 
 from homectrl.auth import login_required
 from homectrl.db import get_db
@@ -33,4 +33,22 @@ def register(room_id):
     rooms = db.execute("SELECT * FROM room;").fetchall()
     room = db.execute("SELECT * FROM room WHERE id = ?;", (room_id, )).fetchone()
     return render_template('heater/register.html', rooms=rooms, room=room)
+
+
+@bp.route('/register/scan')
+@login_required
+def scan():
+    service = DiscoveryService()
+    devices = service.discover(10)
+    macs = [mac for mac in devices if devices[mac] == 'CC-RT-BT']
+    db = get_db()
+    heaters = {}
+    for mac in macs:
+        heater = db.execute("SELECT h.name, r.name as room FROM heater h JOIN room r ON h.room_fk = r.id WHERE h.mac = ?;", (mac,)).fetchone()
+        if heater is not None:
+            heaters[mac] = f"{heater['name']} ({heater['room']})"
+        else:
+            heater[mac] = 'unassigned'
+    return jsonify(heaters)
+
 
