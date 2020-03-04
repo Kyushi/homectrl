@@ -20,8 +20,15 @@
            <label for="mac">
              Heater mac address: 
            </label>
-           <input type="text" name="mac" value="{{mac}}" autocomplete="mac" class="form-control">
-           </div>
+	   <select name="mac">
+             {% for heater in heaters %}
+	     	{% if heater['status'] == 'unassigned' %}
+		<option value="{{heater['mac']}}">{{heater['mac']}}</option>
+		{% endif %}
+	     {% endfor %}
+	   </select>
+
+         </div>
            
          <div class="form-group">
            <label for="name">
@@ -50,6 +57,17 @@
 
        </form>
 
+       {% for heater in heaters %}
+       <div class="col-xs-12 col-md-6">
+	  <p>{{heater['mac']}}</p>
+	  {% if 'name' in heater %}
+	  <p>{{heater['name']}}</p>
+	  <p>{{heater['room']}}</p>
+	  {% endif %}
+	  <p>{{heater['target_temp']}}</p>
+	  <p>{{heater['mode']}}</p>
+       </div>
+       {% endfor %}
     </div>
   </div>
 </section>

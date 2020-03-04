@@ -7,9 +7,17 @@
   {% for heater in heaters %}
   <div class="col-xs-12 heater">
     <div class="col-xs-6">
-        {{ heater.name }}
+	    {% if heater.thermostat.low_battery %}
+	    <p class="error">LOW BATTERY</p>
+	    {% endif %}
+	    {{ heater.name }}<br>
+	    {{ heater.thermostat.target_temperature }}<br>
+	    {{ heater.thermostat.mode_readable }}<br>
     </div>
     <div class="col-xs-6">
+	<a href="{{ url_for('view_schedule', room_name=room.name) }}">
+		View schedule
+	</a>
     </div>
    
   </div>
@@ -18,7 +26,7 @@
 
   <div class="col-xs-6">
         <a href="{{url_for('heater.register', room_id=room.id)}}">
-            Add a heater
+            Add a heater (Clicking this link will take a while, as it will trigger a scan for devices)
         </a>
   </div>
 

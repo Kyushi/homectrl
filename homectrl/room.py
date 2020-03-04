@@ -4,10 +4,28 @@ from flask import (
 
 from homectrl.auth import login_required
 from homectrl.db import get_db
-
+from homectrl.heater import Heater
+from eq3bt import Thermostat
 
 bp = Blueprint('room', __name__, url_prefix='/room')
 
+def get_room():
+    db = get_db()
+    room = db.execute("SELECT * FROM room WHERE name = ?;", (room_name, )).fetchone()
+    return room 
+
+
+def get_heaters(room):
+    db = get_db()
+    heaters = db.execute("SELECT * FROM heater WHERE room_fk = ?;", (room['id'], )).fetchall()
+    updated_heaters = []
+    for heater in heaters:
+        h = Heater(heater)
+        h.room_name = room['name']
+        h.thermostat = Thermostat(heater['mac'])
+        h.thermostat.update()
+        updated_heaters.append(h)
+    return updated_heaters
 
 @bp.route('/register', methods=['GET', 'POST'])
 @login_required
@@ -30,9 +48,20 @@ def register():
     return render_template('room/register.html')
 
 
-@bp.route('/<int:room_id>', methods=['GET', 'POST'])
-def view(room_id):
-    db = get_db()
-    room = db.execute("SELECT * FROM room WHERE id = ?;", (room_id, )).fetchone()
-    heaters = db.execute("SELECT * FROM heater WHERE room_fk = ?;", (room_id, )).fetchall()
+@bp.route('/<room_name>', methods=['GET', 'POST'])
+def view(room_name):
+    room = get_room()
+    heaters = get_heaters(room)
     return render_template('room/view.html', room=room, heaters=heaters)
+
+
+@bp.route('/<room_name>/schedule')
+def view_schedule(room_name):
+    room = get_room()
+    heaters = get_heaters(room)
+    for heater in heaters:
+        for day in range(7):
+            heater.thermostat.query_schedule(day)
+            heater.schedule[day] = heater.thermostat.schedule
+    return render_template('room/view_schedule.html', room=room, heaters=heaters)
+

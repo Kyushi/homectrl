@@ -2,12 +2,21 @@ from flask import (
         Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app, make_response, jsonify
 )
 from bluetooth.ble import DiscoveryService
-
+import eq3bt
 from homectrl.auth import login_required
 from homectrl.db import get_db
 
 
 bp = Blueprint('heater', __name__, url_prefix='/heater')
+
+class Heater:
+    def __init__(self, row):
+        self.id = row['id']
+        self.mac = row['mac']
+        self.name = row['name']
+        self.room_fk = row['room_fk']
+        self.room_name = None
+        self.thermostat = None
 
 
 @bp.route('/register/<int:room_id>', methods=['GET', 'POST'])
@@ -32,23 +41,29 @@ def register(room_id):
             return redirect(url_for('room.view', room_id=room_id))
     rooms = db.execute("SELECT * FROM room;").fetchall()
     room = db.execute("SELECT * FROM room WHERE id = ?;", (room_id, )).fetchone()
-    return render_template('heater/register.html', rooms=rooms, room=room)
-
-
-@bp.route('/register/scan')
-@login_required
-def scan():
+    # Scan for thermostats, try to get current status
     service = DiscoveryService()
-    devices = service.discover(10)
-    macs = [mac for mac in devices if devices[mac] == 'CC-RT-BT']
+    devices = service.discover(5)
+    macs = [mac for mac in devices if devices[mac] == 'CC-RT-BLE']
     db = get_db()
-    heaters = {}
+    heaters = []
     for mac in macs:
+        h = {}
+        h['mac'] = mac
         heater = db.execute("SELECT h.name, r.name as room FROM heater h JOIN room r ON h.room_fk = r.id WHERE h.mac = ?;", (mac,)).fetchone()
         if heater is not None:
-            heaters[mac] = f"{heater['name']} ({heater['room']})"
+            h['status'] = 'registered'
+            h['name'] = heater['name']
+            h['assigned_to'] = heater['room']
         else:
-            heater[mac] = 'unassigned'
-    return jsonify(heaters)
-
+            h['status'] = 'unassigned'
+        t = eq3bt.Thermostat(mac)
+        try:
+            t.update()
+            h['target_temp'] = t.target_temperature
+            h['mode'] = t.mode_readable
+        except BTLEDisconnectError as e:
+            print(f"Unable to connect to thermostat: {mac}")
+        heaters.append(h)
+    return render_template('heater/register.html', rooms=rooms, room=room, heaters=heaters)
 

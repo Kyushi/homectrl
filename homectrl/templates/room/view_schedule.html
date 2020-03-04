@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<section class="row">
+
+  <h2>{{room.name}}</h2>
+
+  {% for heater in heaters %}
+  <div class="col-xs-12 heater">
+
+  {% for day in heater.schedule %}
+    <div class="col-xs-6">
+      {{day}}: {{heater.schedule[day]}}
+    </div>
+  {% endfor %}
+
+  </div>
+  {% endfor %}
+
+</section>
+
+{% endblock %}
