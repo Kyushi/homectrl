@@ -33,7 +33,7 @@ def air_start():
         h.thermostat.update()
         response[h.name] = {
                 'temperature': h.thermostat.target_temperature,
-                'mode': h.thermostat.mode
+                'mode': h.thermostat.mode_readable
                 }
     return jsonify(response)
     
@@ -51,7 +51,7 @@ def air_end():
         h.thermostat.update()
         response[h.name] = {
                 'temperature': h.thermostat.target_temperature,
-                'mode': h.thermostat.mode
+                'mode': h.thermostat.mode_readable
                 }
-    return jsonify(repsonse)
+    return jsonify(response)
 
