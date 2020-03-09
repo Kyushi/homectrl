@@ -62,7 +62,7 @@ def view_schedule(room_name):
     for heater in heaters:
         for day in range(7):
             heater.thermostat.query_schedule(day)
-            heater.schedule[day] = heater.thermostat.schedule
+        heater.schedule = heater.thermostat.schedule
     return render_template('room/view_schedule.html', room=room, heaters=heaters)
 
 @bp.route('/<room_name>/set_target_temp', methods=['POST'])

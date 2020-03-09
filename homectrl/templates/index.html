@@ -14,6 +14,17 @@
   <div class="col-xs-12">
       <a href="{{url_for('room.register')}}">Add another room</a>
   </div>
+
+  <div class="col-xs-12">
+      <a href="#" onclick="startAiring()">Air apartment</a>
+  </div>
+
+  <div class="col-xs-12">
+      <a href="#" onclick="stopAiring()">Stop airing</a>
+  </div>
+
+  <div id="response">
+  </div>
 </section>
 
 {% endblock %}

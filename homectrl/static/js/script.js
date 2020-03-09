@@ -11,3 +11,19 @@ function scanForDevices() {
     )
 }
 
+function startAiring() {
+    $.post($base_url + 'air/start', function(data) {
+	    console.log("Airing apartment");
+            $("#response").text(data);
+	    console.log(data);
+    });
+}
+
+function stopAiring() {
+    $.post($base_url + 'air/end', function(data) {
+	    console.log("Setting back to auto");
+            $("#response").text(data);
+	    console.log(data);
+    });
+}
+

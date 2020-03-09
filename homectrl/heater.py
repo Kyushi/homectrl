@@ -17,6 +17,7 @@ class Heater:
         self.room_fk = row['room_fk']
         self.room_name = None
         self.thermostat = None
+        self.schedule = {}
 
 
 @bp.route('/register/<int:room_id>', methods=['GET', 'POST'])
