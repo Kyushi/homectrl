@@ -4,20 +4,33 @@
 
 <section class="row">
   <h2>{{room.name}}</h2>
+  <form class="form-horizontal" method="POST" action="{{ url_for('room.set_temp', room_name=room.name) }}">
+    <label for="target_temp">
+      New target temperature:
+    </label>
+    <select name="target_temp">
+      {% for temp in range(50, 300, 5) %}
+      <option value={{temp / 10}}>
+      	{{temp / 10}}
+      </option>
+      {% endfor %}
+    </select>
+    <input type="submit" value="Set" class="submit">
+  </form>
   {% for heater in heaters %}
   <div class="col-xs-12 heater">
     <div class="col-xs-6">
-	    {% if heater.thermostat.low_battery %}
-	    <p class="error">LOW BATTERY</p>
-	    {% endif %}
-	    {{ heater.name }}<br>
-	    {{ heater.thermostat.target_temperature }}<br>
-	    {{ heater.thermostat.mode_readable }}<br>
+        {% if heater.thermostat.low_battery %}
+        <p class="error">LOW BATTERY</p>
+        {% endif %}
+        {{ heater.name }}<br>
+        {{ heater.thermostat.target_temperature }}<br>
+        {{ heater.thermostat.mode_readable }}<br>
     </div>
     <div class="col-xs-6">
-	<a href="{{ url_for('view_schedule', room_name=room.name) }}">
-		View schedule
-	</a>
+    <a href="{{ url_for('room.view_schedule', room_name=room.name) }}">
+        View schedule
+    </a>
     </div>
    
   </div>

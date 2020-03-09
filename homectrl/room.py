@@ -1,5 +1,5 @@
 from flask import (
-        Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app, make_response
+        Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app, make_response, jsonify
 )
 
 from homectrl.auth import login_required
@@ -9,7 +9,7 @@ from eq3bt import Thermostat
 
 bp = Blueprint('room', __name__, url_prefix='/room')
 
-def get_room():
+def get_room(room_name):
     db = get_db()
     room = db.execute("SELECT * FROM room WHERE name = ?;", (room_name, )).fetchone()
     return room 
@@ -50,18 +50,30 @@ def register():
 
 @bp.route('/<room_name>', methods=['GET', 'POST'])
 def view(room_name):
-    room = get_room()
+    room = get_room(room_name)
     heaters = get_heaters(room)
     return render_template('room/view.html', room=room, heaters=heaters)
 
 
 @bp.route('/<room_name>/schedule')
 def view_schedule(room_name):
-    room = get_room()
+    room = get_room(room_name)
     heaters = get_heaters(room)
     for heater in heaters:
         for day in range(7):
             heater.thermostat.query_schedule(day)
             heater.schedule[day] = heater.thermostat.schedule
     return render_template('room/view_schedule.html', room=room, heaters=heaters)
+
+@bp.route('/<room_name>/set_target_temp', methods=['POST'])
+@login_required
+def set_temp(room_name):
+    db = get_db()
+    room = get_room(room_name)
+    heaters = get_heaters(room)
+    new_temp = float(request.form['target_temp'])
+    for heater in heaters:
+        heater.thermostat.target_temperature = new_temp
+    return jsonify({'success': f'target temperature set to {new_temp}'})
+
 
